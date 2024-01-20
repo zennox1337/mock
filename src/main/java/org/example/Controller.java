@@ -1,8 +1,12 @@
 package org.example;
 
 import com.opencsv.CSVReader;
+import io.github.mweirauch.micrometer.jvm.extras.ProcessMemoryMetrics;
+import io.github.mweirauch.micrometer.jvm.extras.ProcessThreadMetrics;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +18,16 @@ import java.util.*;
 @RestController
 @RequestMapping("/count")
 public class Controller {
+
+    @Bean
+    public MeterBinder processMemoryMetrics() {
+        return new ProcessMemoryMetrics();
+    }
+
+    @Bean
+    public MeterBinder processThreadMetrics() {
+        return new ProcessThreadMetrics();
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
