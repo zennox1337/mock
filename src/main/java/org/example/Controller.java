@@ -1,11 +1,8 @@
 package org.example;
 
 import com.opencsv.CSVReader;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,21 +17,9 @@ public class Controller {
 
     private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
-    private final MeterRegistry meterRegistry;
-
-    @Autowired
-    public Controller(MeterRegistry meterRegistry) {
-        this.meterRegistry = meterRegistry;
-    }
-
     @PostMapping
     public Response generateData(@RequestBody CountRequest countRequest) {
         logger.info("New request with count: {}", countRequest.getCount());
-
-        // Инкрементируем счетчик для каждого запроса
-        Counter requestsCounter = meterRegistry.counter("requests.total");
-        requestsCounter.increment();
-
         return new Response(generateRandomData(countRequest.getCount()));
     }
 
