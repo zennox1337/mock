@@ -33,7 +33,7 @@ public class Controller {
 
     @PostMapping
     public Response generateData(@RequestBody CountRequest countRequest) {
-        logger.info("New request with count: {}", countRequest.getCount());
+//        logger.info("New request with count: {}", countRequest.getCount());
         return new Response(generateRandomData(countRequest.getCount()));
     }
 
