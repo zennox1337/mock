@@ -23,7 +23,7 @@ public class Controller {
     private static final List<String> firstnames;
 
     static {
-        // Вызываем loadFromCSV для lastname.csv и firstname.csv один раз при загрузке класса
+        // Вызываем один раз при загрузке класса
         lastnames = loadFromCSV("lastname.csv");
         firstnames = loadFromCSV("firstname.csv");
     }
