@@ -19,6 +19,15 @@ import java.util.*;
 @RequestMapping("/count")
 public class Controller {
 
+    private static final List<String> lastnames;
+    private static final List<String> firstnames;
+
+    static {
+        // Вызываем loadFromCSV для lastname.csv и firstname.csv один раз при загрузке класса
+        lastnames = loadFromCSV("lastname.csv");
+        firstnames = loadFromCSV("firstname.csv");
+    }
+
     @Bean
     public MeterBinder processMemoryMetrics() {
         return new ProcessMemoryMetrics();
@@ -37,14 +46,12 @@ public class Controller {
         return new Response(generateRandomData(countRequest.getCount()));
     }
 
-    private List<DataItem> generateRandomData(int count) {
-        List<DataItem> data = new ArrayList<>();
-        List<String> lastnames = loadFromCSV("lastname.csv");
-        List<String> firstnames = loadFromCSV("firstname.csv");
-        Random random = new Random();
-
-        for (int i = 0; i < count; i++) {
-            data.add(new DataItem(getRandomElement(lastnames, random), getRandomElement(firstnames, random), UUID.randomUUID().toString()));
+    static private List<String> loadFromCSV(String fileName) {
+        List<String> data = new ArrayList<>();
+        try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(Controller.class.getResourceAsStream("/" + fileName))))) {
+            reader.forEach(line -> data.add(line[0]));
+        } catch (Exception e) {
+            logger.error("Error loading data from CSV: {}", e.getMessage());
         }
 
         return data;
@@ -54,12 +61,13 @@ public class Controller {
         return list.get(random.nextInt(list.size()));
     }
 
-    private List<String> loadFromCSV(String fileName) {
-        List<String> data = new ArrayList<>();
-        try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream("/" + fileName))))) {
-            reader.forEach(line -> data.add(line[0]));
-        } catch (Exception e) {
-            logger.error("Error loading data from CSV: {}", e.getMessage());
+    private List<DataItem> generateRandomData(int count) {
+        List<DataItem> data = new ArrayList<>();
+
+        Random random = new Random();
+
+        for (int i = 0; i < count; i++) {
+            data.add(new DataItem(getRandomElement(lastnames, random), getRandomElement(firstnames, random), UUID.randomUUID().toString()));
         }
 
         return data;
