@@ -58,7 +58,6 @@ public class Controller {
     }
 
 
-
     private String getRandomElement(List<String> list, Random random) {
         return list.get(random.nextInt(list.size()));
     }
