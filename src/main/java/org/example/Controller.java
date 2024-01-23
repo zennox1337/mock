@@ -38,14 +38,6 @@ public class Controller {
         return new ProcessThreadMetrics();
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
-
-    @PostMapping
-    public Response generateData(@RequestBody CountRequest countRequest) {
-//        logger.info("New request with count: {}", countRequest.getCount());
-        return new Response(generateRandomData(countRequest.getCount()));
-    }
-
     static private List<String> loadFromCSV(String fileName) {
         List<String> data = new ArrayList<>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(Objects.requireNonNull(Controller.class.getResourceAsStream("/" + fileName))))) {
@@ -56,6 +48,16 @@ public class Controller {
 
         return data;
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
+
+    @PostMapping
+    public Response generateData(@RequestBody CountRequest countRequest) {
+//        logger.info("New request with count: {}", countRequest.getCount());
+        return new Response(generateRandomData(countRequest.getCount()));
+    }
+
+
 
     private String getRandomElement(List<String> list, Random random) {
         return list.get(random.nextInt(list.size()));
